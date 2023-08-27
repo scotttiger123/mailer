@@ -80,9 +80,9 @@
       </div> -->
       <!-- /.social-auth-links -->
 
-      <p class="mb-1">
+      <!-- <p class="mb-1">
         <a href="forgot">I forgot my password</a>
-      </p>
+      </p> -->
       <p class="mb-0">
         <a href="/register" class="text-center">Register a new membership</a>
       </p>

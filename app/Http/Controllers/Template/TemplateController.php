@@ -47,5 +47,16 @@ class TemplateController extends Controller
         $templates = Template::all();
         return view('template.show-popup');
     }
+
+    public function showPopup($id)
+    {
+        $template = Template::findOrFail($id);
+
+        return response()->json([
+            'name' => $template->name,
+            'subject' => $template->subject, // Assuming 'content' is a property of your template
+            'content' => $template->content, // Assuming 'content' is a property of your template
+        ]);
+    }
     
 }

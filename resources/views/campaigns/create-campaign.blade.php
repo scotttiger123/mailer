@@ -10,7 +10,7 @@
                     <h3 class="card-title">Campaign Scheduler </h3>
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('template.create') }}" method="post">
+                    <form action="{{ route('campaign') }}" method="post">
                         @csrf
                         <div class="form-group">
                             <label for="campaign_name">Campaign Name</label>

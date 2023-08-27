@@ -35,9 +35,8 @@
     </div>
 </div>
 
-<!-- Modal -->
 <div class="modal fade" id="templateModal" tabindex="-1" role="dialog" aria-labelledby="templateModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
+    <div class="modal-dialog modal-lg" role="document"> <!-- Add 'modal-md' class here -->
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="templateModalLabel"></h5>
@@ -51,6 +50,7 @@
         </div>
     </div>
 </div>
+
 
 @endsection
 

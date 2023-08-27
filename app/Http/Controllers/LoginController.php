@@ -65,7 +65,7 @@ class LoginController extends Controller
         $user->save();
     
         if(\Auth::attempt($request->only('email','password'))) {
-            return redirect('welcome');
+            return redirect('dashboard');
         }
         
     

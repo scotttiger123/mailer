@@ -22,7 +22,7 @@
 <!-- Summernote -->
 <script src="../../plugins/summernote/summernote-bs4.min.js"></script>
 <!-- AdminLTE for demo purposes -->
-<script src="../../dist/js/demo.js"></script>
+<!-- <script src="../../dist/js/demo.js"></script> -->
 
 <!-- Your Summernote Initialization -->
 <script>
@@ -50,13 +50,17 @@
         // Handle the click event for the "View" button
         $('.view-template').on('click', function() {
             var templateId = $(this).data('template');
+            
             $.ajax({
-                url: "{{ route('show-popup') }}", // Update the route
+                url: "{{ route('show-popup', ['id' => ':id']) }}".replace(':id', templateId),
                 method: 'GET',
                 data: { id: templateId },
                 success: function(response) {
+                    
                     $('#templateModalLabel').text(response.name);
+                    $('#templateModalBody').html(response.subject);
                     $('#templateModalBody').html(response.content);
+
                     $('#templateModal').modal('show');
                 }
             });

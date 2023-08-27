@@ -36,7 +36,7 @@ Route::get('view-campaign', [CampaignController::class, 'view'])->name('campaign
 Route::get('template', [TemplateController::class, 'create'])->name('template.create');
 Route::post('template', [TemplateController::class, 'store'])->name('template.create');
 Route::get('view-templates',[TemplateController::class,'viewTemplates'])->name('view.templates');
-Route::get('show-popup',[TemplateController::class,'viewPopup'])->name('show-popup');
+Route::get('/show-popup/{id}', [TemplateController::class,'showPopup'])->name('show-popup');
 
 
 

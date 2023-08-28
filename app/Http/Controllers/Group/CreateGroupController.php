@@ -29,17 +29,14 @@ class CreateGroupController extends Controller
     $data = $request->validate([
         'group_id'           => 'required|string|max:255',
         'assign_emails_json' => 'nullable|string',
-        'file' => 'required|mimes:csv|max:2048', // Make sure you're validating the file type
+        
     ]);
     
     $emailsArray = explode(',', $data['assign_emails_json']);
     $assignEmailsJson = json_encode($emailsArray);
     $data['assign_emails_json'] = $assignEmailsJson;
     
-    // Store the file in storage/app/public directory
-     $path = $request->file('file')->storeAs('uploads', $request->file('file')->getClientOriginalName());
-        
-
+    
         MailsToGroup::create($data);
         
         return redirect('assign-mails')->with('success', 'Mail Assigned successfully.');
@@ -49,7 +46,7 @@ class CreateGroupController extends Controller
     {
         
         $data = $request->validate([
-            'group_name'        => 'required|string|max:255',
+            'group_name'        => 'required|string|max:255|unique:groups,group_name',
             'group_description' => 'nullable|string',
             'group_type'        => 'required|string',
             'group_category'    => 'required|string',

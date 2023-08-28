@@ -13,9 +13,18 @@
               <form action="{{ route('template.create') }}" method="post">
                         @csrf
                         @if (session('success'))
-                        <div class="alert alert-success auto-hide" >
+                        <div class="alert alert-success auto-hide">
                             {{ session('success') }}
                         </div>
+                        @endif
+                        @if($errors->any())
+                            <div class="alert alert-danger auto-hide">
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
                         @endif
                 <div class="form-group">
                     <label for="group_name">Template Name</label>

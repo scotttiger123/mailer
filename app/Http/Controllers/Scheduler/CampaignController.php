@@ -24,7 +24,7 @@ class CampaignController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'campaign_name'     => 'required|string|max:255',
+            'campaign_name'     => 'required|string|max:255|unique:campaigns,campaign_name',
             'group_id'          => 'required|exists:groups,id', 
             'schedule_option'   => 'required|string',
             'start_date'        => 'nullable|date',

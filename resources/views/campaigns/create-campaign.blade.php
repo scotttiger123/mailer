@@ -10,17 +10,27 @@
                     <h3 class="card-title">Campaign Scheduler</h3>
                 </div>
                 <div class="card-body">
+                        @if (session('success'))
+                        <div class="alert alert-success auto-hide">
+                            {{ session('success') }}
+                        </div>
+                        @endif
+                        @if($errors->any())
+                            <div class="alert alert-danger">
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
                     <form action="{{ route('campaign') }}" method="post">
                         @csrf
                         <div class="form-group">
                             <label for="campaign_name">Campaign Name</label>
                             <input type="text" class="form-control" id="campaign_name" name="campaign_name" required>
                         </div>
-                        @if (session('success'))
-                        <div class="alert alert-success auto-hide">
-                            {{ session('success') }}
-                        </div>
-                        @endif
+                       
                         <div class="form-group">
                             <label for="group_id">Select Group</label>
                             <select class="form-control" id="group_id" name="group_id" required>

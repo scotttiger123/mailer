@@ -9,14 +9,23 @@
         <div class="container-fluid">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Create Group and Assign Email</h3>
+                    <h3 class="card-title">Create Group Name</h3>
                 </div>
                 <div class="card-body">
                     @if (session('success'))
                         <div class="alert alert-success auto-hide">
                             {{ session('success') }}
                         </div>
-                    @endif
+                        @endif
+                        @if($errors->any())
+                            <div class="alert alert-danger auto-hide">
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
                     <form action="{{ route('group') }}" method="post">
                         @csrf
                         <div class="form-group">

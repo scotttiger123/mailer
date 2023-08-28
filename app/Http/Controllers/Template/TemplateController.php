@@ -27,10 +27,8 @@ class TemplateController extends Controller
         $template->subject = $data['subject'];
         $template->content = $data['content'];
 
-        // Save the template
         $template->save();
 
-        // Redirect back or to any other page
         return redirect()->route('template.create')->with('success', 'Email template created successfully!');
     }
 
@@ -54,8 +52,8 @@ class TemplateController extends Controller
 
         return response()->json([
             'name' => $template->name,
-            'subject' => $template->subject, // Assuming 'content' is a property of your template
-            'content' => $template->content, // Assuming 'content' is a property of your template
+            'subject' => $template->subject, 
+            'content' => $template->content, 
         ]);
     }
     

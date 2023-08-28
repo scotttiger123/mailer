@@ -30,16 +30,14 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="assign_email">E-mails</label> (can paste bulk mail address)
-                            <textarea class="form-control" id="assign_email" name="assign_emails_json" rows="3" required></textarea>
+                            <label for="assign_email">E-mails</label> (can paste bulk mail address formate :abc@gmail.com,xyx@yahoo.com,yyx@gmail.com))
+                            <textarea class="form-control" id="assign_email" placeholder = "xyx@gmail.com,abc@gmail.com,yyx@gmail.com"name="assign_emails_json" rows="3" required></textarea>
                         </div>
                         <div class="form-group">
                             <label for="email_list">Upload Email List</label> (excel formate)
                             <input type="file" class="form-control" id="email_list" name="email_list" accept=".csv,.xlsx">
                         </div>
-                        <label for="csv_file">Upload CSV File:</label>
-                        1<input type="file" name="file" accept=".csv">
-                        <button type="submit" class="btn btn-primary">Create Group</button>
+                        <button type="submit" class="btn     btn-primary">Create Group</button>
                     </form>
                 </div>
             </div>

@@ -15,12 +15,13 @@ class CampaignCreated extends Mailable
 {
     use Queueable, SerializesModels;
 
-    /**
-     * Create a new message instance.
-     */
-    public function __construct()
+    public $subject;
+    public $emailData;
+
+    public function __construct($subject,$emailData)
     {
-        //
+        $this->emailData = $emailData;
+        $this->subject = $subject;
     }
 
     /**
@@ -29,25 +30,27 @@ class CampaignCreated extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Campaign Created',
+
+            subject: $this->subject,
+            
         );
     }
 
-    /**
-     * Get the message content definition.
-     */
+    
     public function content(): Content
     {
         return new Content(
-            view: 'template.views.compain-created',
+            view: 'template.views.mail-template',
+            with: [
+               
+                'emailData' => $this->emailData,
+                'subject'   => $this->subject
+                
+            ],
         );
     }
 
-    /**
-     * Get the attachments for the message.
-     *
-     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
-     */
+    
     public function attachments(): array
     {
         return [];

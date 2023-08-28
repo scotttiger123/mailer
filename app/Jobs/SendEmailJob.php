@@ -16,19 +16,23 @@ use Illuminate\Support\Facades\Mail;
 class SendEmailJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
-    protected $emailAddress;
-    protected $campaignData;
+    
+    public $emailAddress;
+    public $emailData;
 
-    public function __construct($emailAddress, $campaignData)
+    public function __construct($emailAddress, $emailData)
     {
         $this->emailAddress = $emailAddress;
-        $this->campaignData = $campaignData;
+        $this->emailData    = $emailData;
     }
-
+      
+    
+  
     public function handle()
     {
         
-        //Mail::to("phpfreak4u@gmail.com")->send(new CampaignCreated($this->campaignData));
-        Mail::to("phpfreak4u@gmail.com") ->send(new CampaignCreated($this->campaignData));
+        
+        Mail::to($this->emailAddress)->send(new CampaignCreated($this->emailData['subject'], $this->emailData));
     }
 }
+

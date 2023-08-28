@@ -7,7 +7,7 @@
         <div class="container-fluid">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Campaign Scheduler </h3>
+                    <h3 class="card-title">Campaign Scheduler</h3>
                 </div>
                 <div class="card-body">
                     <form action="{{ route('campaign') }}" method="post">
@@ -17,7 +17,7 @@
                             <input type="text" class="form-control" id="campaign_name" name="campaign_name" required>
                         </div>
                         @if (session('success'))
-                        <div class="alert alert-success auto-hide" >
+                        <div class="alert alert-success auto-hide">
                             {{ session('success') }}
                         </div>
                         @endif
@@ -54,12 +54,12 @@
                             <label for="template_option">Select Template</label>
                             <select class="form-control" id="template_option" name="template_option" required>
                                 <option value="">Select Template</option>
-                                <option value="template1">Template 1</option>
-                                <option value="template2">Template 2</option>
-                                <option value="template3">Template 3</option>
+                                @foreach ($templates as $template)
+                                    <option value="{{ $template->id }}">{{ $template->name }}</option>
+                                @endforeach
                             </select>
                         </div>
-                        <button type="submit" class="btn btn-primary">Schedule Mail</button>
+                        <button type="submit" class="btn btn-primary">Create Campaign</button>
                     </form>
                 </div>
             </div>

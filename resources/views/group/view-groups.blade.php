@@ -7,12 +7,40 @@
         <div class="container-fluid">
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Groups with Assigned E-mails</h3>
+                    <h3 class="card-title">Groups Details</h3>
                 </div>
                 <div class="card-body">
+                     @if (session('success'))
+                        <div class="alert alert-success auto-hide" >
+                            {{ session('success') }}
+                        </div>
+                    @endif
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
                     @foreach ($groups as $group)
                         <div class="group-card">
-                            <h4>{{ $group->group_name }}</h4>
+                        <div class="d-flex justify-content-between align-items-center">
+                                <h4>{{ $group->group_name }}</h4>
+                                <div>
+                                    <a href="#" class="btn btn-primary mr-2">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <form action="{{ route('groups.delete', $group->id) }}" method="POST" style="display: inline;padding-bottom:15px;" id="deleteForm-{{ $group->id }}">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger" onclick="return confirmDelete(event)">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
                             <div class="show-emails">
                                 <button class="show-emails-btn">
                                     <span class="btn-text">Show Assigned E-mails</span>
@@ -83,6 +111,14 @@
 
 <!-- JavaScript -->
 <script>
+        function confirmDelete(event) {
+        if (confirm("Are you sure you want to delete this group?")) {
+            return true;
+        } else {
+            event.preventDefault(); // Prevent form submission
+            return false;
+        }
+    }
     const showButtons = document.querySelectorAll('.show-emails-btn');
     showButtons.forEach(button => {
         button.addEventListener('click', () => {

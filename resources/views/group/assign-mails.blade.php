@@ -15,9 +15,15 @@
                             {{ session('success') }}
                         </div>
                     @endif
-                    @error('file')
-                    <div class="text-danger">{{ $message }}</div>
-                    @enderror
+                    @if ($errors->any())
+                        <div class="alert alert-danger">
+                            <ul>
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
                     <form action="" method="post" enctype="multipart/form-data">
                         @csrf
                         <div class="form-group">
@@ -31,13 +37,13 @@
                         </div>
                         <div class="form-group">
                             <label for="assign_email">E-mails</label> (can paste bulk mail address formate :abc@gmail.com,xyx@yahoo.com,yyx@gmail.com))
-                            <textarea class="form-control" id="assign_email" placeholder = "xyx@gmail.com,abc@gmail.com,yyx@gmail.com"name="assign_emails_json" rows="3" required></textarea>
+                            <textarea class="form-control" id="assign_email" placeholder = "xyx@gmail.com,abc@gmail.com,yyx@gmail.com"name="assign_emails_json" rows="3" ></textarea>
                         </div>
                         <div class="form-group">
                             <label for="email_list">Upload Email List</label> (excel formate)
-                            <input type="file" class="form-control" id="email_list" name="email_list" accept=".csv,.xlsx">
+                            <input type="file" class="form-control" id="email_list" name="email_list" accept=".xlsx">
                         </div>
-                        <button type="submit" class="btn     btn-primary">Create Group</button>
+                        <button type="submit" class="btn     btn-primary">Save </button>
                     </form>
                 </div>
             </div>

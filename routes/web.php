@@ -25,7 +25,12 @@ Route::get('group', [CreateGroupController::class,'index'])->name('group');
 Route::post('group', [CreateGroupController::class,'store'])->name('store');
 Route::get('assign-mails', [CreateGroupController::class,'assign_mails_index']);
 Route::post('assign-mails', [CreateGroupController::class,'store_assigned_mails']);
-Route::get('view-groups', [CreateGroupController::class,'view_group']);
+Route::get('view-groups', [CreateGroupController::class,'view_group'])->name('view-groups');
+Route::delete('view-groups/{id}', [CreateGroupController::class,'deleteGroup'])->name('groups.delete');;
+
+
+
+
 
 /*campaigns*/
 Route::get('campaign', [CampaignController::class,'index']);

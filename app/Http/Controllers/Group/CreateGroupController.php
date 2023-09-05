@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Models\Group;
 use App\Models\MailsToGroup;
+use App\Imports\EmailsImport; 
+use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Validation\Rule;
 
 class CreateGroupController extends Controller
 {
@@ -23,23 +26,45 @@ class CreateGroupController extends Controller
     }
     
     public function store_assigned_mails (Request $request) {
+        $data = $request->validate([
+            'group_id' => 'required|string|max:255',
+            'assign_emails_json' => [
+                'nullable',
+                'string',
+                Rule::requiredIf(function () use ($request) {
+                    return !$request->hasFile('email_list'); // Only required if email_list is not present
+                }),
+            ],
+            'email_list' => [
+                'nullable',
+                'file',
+                'mimes:xlsx',
+                Rule::requiredIf(function () use ($request) {
+                    return empty($request->input('assign_emails_json')); // Only required if assign_emails_json is empty
+                }),
+            ],
+        ]);
         
-    //dd($request->all());
+        if($data['assign_emails_json']){
+            $emailsArray = explode(',', $data['assign_emails_json']);
+            $assignEmailsJson = json_encode($emailsArray);
+            $data['assign_emails_json'] = $assignEmailsJson;
+            MailsToGroup::create($data);
+        }   
+    
+            if ($request->hasFile('email_list') && $request->file('email_list')->isValid()) {
+                $groupId = $request->input('group_id'); // Get the group_id from the request
 
-    $data = $request->validate([
-        'group_id'           => 'required|string|max:255',
-        'assign_emails_json' => 'nullable|string',
-        
-    ]);
-    
-    $emailsArray = explode(',', $data['assign_emails_json']);
-    $assignEmailsJson = json_encode($emailsArray);
-    $data['assign_emails_json'] = $assignEmailsJson;
-    
-    
-        MailsToGroup::create($data);
-        
-        return redirect('assign-mails')->with('success', 'Mail Assigned successfully.');
+                // Pass the $groupId when creating the import instance
+                $import = new EmailsImport($groupId);
+
+                Excel::import($import, $request->file('email_list'));
+
+              
+            }
+
+            return redirect('assign-mails')->with('success', 'Mail Assigned successfully.');   
+
     }
 
     public function store(Request $request)
@@ -70,5 +95,17 @@ class CreateGroupController extends Controller
         return view('group.view-groups', compact('groups'));
     }
     
+
+    public function deleteGroup(Request $request, $id)
+    {
+        try {
+            $group = Group::findOrFail($id);
+            $group->delete();
+            return redirect()->route('view-groups')->with('success', 'Group deleted successfully');
+        } catch (\Exception $e) {
+            return redirect()->route('view-groups')->with('error', 'Failed to delete group');
+        }
+    }
+
 
 }

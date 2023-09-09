@@ -16,4 +16,13 @@ class Campaign extends Model
         'recurring_option',
         'template_option',
     ];
+    public function template()
+        {
+            return $this->belongsTo(Template::class, 'template_option');
+        }
+
+    public function group()
+        {
+            return $this->belongsTo(Group::class, 'group_id');
+        }   
 }

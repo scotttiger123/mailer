@@ -19,7 +19,7 @@ class TemplateController extends Controller
             
             'name' => 'required|string|max:255|unique:templates,name',
             'subject' => 'required|string|max:255',
-            'content' => 'required',
+            'content' => 'required', 
         ]);
 
         // Create a new Template instance
@@ -57,5 +57,37 @@ class TemplateController extends Controller
             'content' => $template->content, 
         ]);
     }
+
+    public function destroy(Request $request, $id)
+    {
+        $template = Template::findOrFail($id);
+        $template->delete();
+
+        return redirect()->route('view.templates')->with('success', 'Template deleted successfully.');
+    }
+
+
+    public function edit($id) {
+        
+        $template = Template::find($id);
+        return view('template.edit', compact('template'));
+    }
+
+    public function update(Request $request, Template $template)
+{
+    $request->validate([
+            'name' => 'required|max:255',
+            'subject' => 'required|string|max:255',
+            'content' => 'required',
+    ]);
+
+    $template->update([
+        'name' => $request->input('name'),
+        'subject' => $request->input('subject'),
+        'content' => $request->input('content'),
+    ]);
+
+    return redirect()->route('view.templates')->with('success', 'Template updated successfully');
+}
     
 }

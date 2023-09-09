@@ -51,7 +51,7 @@
             </a>
             <ul class="nav nav-treeview">
             <li class="nav-item">
-              <a href="group" class="nav-link">
+              <a href="{{ route('group') }}" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
                   <p>
                     Create Group 
@@ -59,7 +59,7 @@
               </a>
             </li>
               <li class="nav-item">
-                <a href="assign-mails" class="nav-link">
+                <a href="{{ route('assign-mails') }}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                     <p>
                       Assign E-Mails 
@@ -67,7 +67,7 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="view-groups" class="nav-link">
+                <a href="{{ route('view-groups') }}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>
                     View Groups  
@@ -86,18 +86,18 @@
             </a>
             <ul class="nav nav-treeview">
             <li class="nav-item">
-                <a href="campaign" class="nav-link">
+                <a href="{{ route('create-campaign') }}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>
-                     Campaign Schedule
+                     Create Campaign 
                   </p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="view-campaign" class="nav-link">
+                <a href="{{ route('campaign.view') }}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>
-                     Campaigns  
+                     View Campaign  
                   </p>
                 </a>
               </li>
@@ -113,7 +113,7 @@
             </a>
             <ul class="nav nav-treeview">
             <li class="nav-item">
-                <a href="template" class="nav-link">
+                <a href="{{ route('template.create') }}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>
                     Create Template
@@ -121,7 +121,7 @@
                 </a>
               </li>
               <li class="nav-item">
-                <a href="view-templates" class="nav-link">
+                <a href="{{ route('view.templates') }}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>
                      Templates  

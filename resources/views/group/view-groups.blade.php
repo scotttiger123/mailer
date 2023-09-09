@@ -24,14 +24,66 @@
                             </ul>
                         </div>
                     @endif
+                    @if ($groups->isEmpty())
+                        <p>No groups available.</p>
+                    @endif
                     @foreach ($groups as $group)
                         <div class="group-card">
-                        <div class="d-flex justify-content-between align-items-center">
-                                <h4>{{ $group->group_name }}</h4>
-                                <div>
-                                    <a href="#" class="btn btn-primary mr-2">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
+                            <div class="d-flex justify-content-between align-items-center">
+                            <h4 class="text-bold text-primary">{{ $group->group_name }}</h4>
+                                </button>
+                                   <div>
+                                    <!-- Edit Group Button -->
+                                    <button
+                                            type="button"
+                                            class="btn btn-primary"
+                                            data-toggle="modal"
+                                            data-target="#editGroupModal"
+                                            data-groupid="{{ $group->id }}"
+                                            data-groupname="{{ $group->group_name }}"
+                                            data-assignedemails="{{ implode(', ', array_merge(...array_map('json_decode', $group->mailsToGroups->pluck('assign_emails_json')->flatten()->toArray()))) }}"
+
+                                        >
+                                            Edit
+                                        </button>
+
+                                        <div class="modal fade" id="editGroupModal" tabindex="-1" role="dialog" aria-labelledby="editGroupModalLabel" aria-hidden="true">
+                                            <div class="modal-dialog" role="document">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title" id="editGroupModalLabel">Edit Group Details</h5>
+                                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                            <span aria-hidden="true">&times;</span>
+                                                        </button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        
+                                                        <form action="{{ route('groups.update') }}" method="POST">
+
+                                                            @csrf
+                                                            @method('PUT')
+                                                            
+                                                            <!-- Hidden input for group ID -->
+                                                            <input type="hidden" id="editGroupId" name="editGroupId" value="">
+
+                                                            <!-- Edit Group Name -->
+                                                            <div class="form-group">
+                                                                <label for="editGroupName">Group Name</label>
+                                                                <input type="text" class="form-control" id="editGroupName" name="editGroupName" required>
+                                                            </div>
+
+                                                            <!-- Edit Assigned Emails -->
+                                                            <div class="form-group">
+                                                                <label for="editAssignedEmails">Assigned Emails</label>
+                                                                <textarea class="form-control" id="editAssignedEmails" name="editAssignedEmails" rows="4"></textarea>
+                                                            </div>
+
+                                                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     <form action="{{ route('groups.delete', $group->id) }}" method="POST" style="display: inline;padding-bottom:15px;" id="deleteForm-{{ $group->id }}">
                                         @csrf
                                         @method('DELETE')
@@ -42,17 +94,12 @@
                                 </div>
                             </div>
                             <div class="show-emails">
-                                <button class="show-emails-btn">
-                                    <span class="btn-text">Show Assigned E-mails</span>
-                                    <span class="btn-icon">▼</span>
-                                </button>
                                 <div class="emails-list hidden">
-                                    @if ($group->mailsToGroups)
-                                        <h4>Assigned E-mails:</h4>
+                                    @if ($group->mailsToGroups->count() > 0)
                                         <ul>
                                             @foreach ($group->mailsToGroups as $mailsToGroup)
                                                 @foreach (json_decode($mailsToGroup->assign_emails_json) as $email)
-                                                    <li>{{ $email }}</li>
+                                                    {{ $email }}
                                                 @endforeach
                                             @endforeach
                                         </ul>
@@ -70,48 +117,14 @@
     </div>
 </div>
 
-<!-- CSS Styles -->
-<style>
-    .group-card {
-        margin-bottom: 20px;
-    }
+<!-- Edit Group Modal -->
 
-    .show-emails-btn {
-        cursor: pointer;
-        background-color: #f4f4f4;
-        border: none;
-        padding: 5px 10px;
-        display: flex;
-        align-items: center;
-        width: 100%;
-        text-align: left;
-    }
-
-    .show-emails-btn:hover {
-        background-color: #e0e0e0;
-    }
-
-    .btn-icon {
-        margin-left: auto;
-        transition: transform 0.3s ease-in-out;
-    }
-
-    .show-emails-btn.collapsed .btn-icon {
-        transform: rotate(-90deg);
-    }
-
-    .emails-list {
-        margin-top: 10px;
-    }
-
-    .hidden {
-        display: none;
-    }
-</style>
 
 <!-- JavaScript -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <script>
-        function confirmDelete(event) {
+    function confirmDelete(event) {
         if (confirm("Are you sure you want to delete this group?")) {
             return true;
         } else {
@@ -119,12 +132,45 @@
             return false;
         }
     }
+
     const showButtons = document.querySelectorAll('.show-emails-btn');
     showButtons.forEach(button => {
         button.addEventListener('click', () => {
             const emailsList = button.nextElementSibling;
             emailsList.classList.toggle('hidden');
             button.classList.toggle('collapsed');
+        });
+    });
+
+    
+// Handle Edit Group Modal
+$(document).ready(function() {
+    $('#editGroupModal').on('show.bs.modal', function (event) {
+        var button = $(event.relatedTarget);
+        var groupId = button.data('groupid');
+        var groupName = button.data('groupname');
+        var assignedEmails = button.data('assignedemails');
+        console.log(assignedEmails);
+        if (Array.isArray(assignedEmails)) {
+            // Flatten the array and join the elements with commas
+            var emailString = assignedEmails.flat().join(', ');
+        } else {
+            // If it's not an array, treat it as a single email
+            var emailString = assignedEmails;
+        }
+
+        var modal = $(this);
+        modal.find('#editGroupId').val(groupId);
+        modal.find('#editGroupName').val(groupName);
+        modal.find('#editAssignedEmails').val(emailString);
+    });
+});
+
+
+    $(document).ready(function() {
+        $('.show-emails-btn').click(function() {
+            $(this).find('.btn-icon').toggleClass('collapsed');
+            $(this).next('.emails-list').toggleClass('hidden');
         });
     });
 </script>

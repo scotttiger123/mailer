@@ -108,4 +108,22 @@ class CreateGroupController extends Controller
     }
 
 
+    public function update(Request $request)
+    {
+        
+        $group = Group::findOrFail($request->input('editGroupId'));
+        
+        $group->group_name = $request->input('editGroupName');
+        $emails = preg_split('/\r\n|\r|\n/', $request->input('editAssignedEmails'));
+        $group->mailsToGroups()->delete(); // Delete existing email assignments
+    
+        foreach ($emails as $email) {
+            $group->mailsToGroups()->create([
+                'assign_emails_json' => json_encode([$email]),
+            ]);
+        }
+        $group->save();
+        return redirect()->route('view-groups')->with('success', 'Group updated successfully');
+    }
+
 }

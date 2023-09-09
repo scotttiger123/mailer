@@ -41,13 +41,6 @@
                      <br><br><br><br><br><br><br><br>
                     </textarea>
                 </div>
-                <div class="form-group">
-                  <div class="btn btn-default btn-file">
-                    <i class="fas fa-paperclip"></i> Attachment
-                    <input type="file" name="attachment">
-                  </div>
-                  <p class="help-block">Max. 32MB</p>
-                </div>
               </div>
               <!-- /.card-body -->
               <div class="card-footer">
@@ -55,7 +48,7 @@
                   
                   <button type="submit" class="btn btn-primary"><i class="far fa-envelope"></i> Save</button>
                 </div>
-                <button type="reset" class="btn btn-default"><i class="fas fa-times"></i> Discard</button>
+                <!-- <button type="reset" class="btn btn-default"><i class="fas fa-times"></i> Discard</button> -->
               </div>
               <!-- /.card-footer -->
             </div>

@@ -23,4 +23,5 @@ class Group extends Model
     {
         return $this->hasMany(MailsToGroup::class, 'group_id');
     }
+    
 }

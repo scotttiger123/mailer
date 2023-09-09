@@ -30,8 +30,8 @@
                     <div class="info-box">
                         <span class="info-box-icon bg-primary elevation-1"><i class="fas fa-envelope"></i></span>
                         <div class="info-box-content">
-                            <span class="info-box-text">Total Emails</span>
-                            <span class="info-box-number">5,000</span>
+                            <span class="info-box-text">Total Emails </span>
+                            <span class="info-box-number">{{ $TotalEmailLog }}</span>
                         </div>
                         <!-- /.info-box-content -->
                     </div>
@@ -43,7 +43,7 @@
                         <span class="info-box-icon bg-secondary elevation-1"><i class="fas fa-file-alt"></i></span>
                         <div class="info-box-content">
                             <span class="info-box-text">Templates</span>
-                            <span class="info-box-number">20</span>
+                            <span class="info-box-number">{{ $totalTemplates }}</span>
                         </div>
                         <!-- /.info-box-content -->
                     </div>
@@ -52,10 +52,10 @@
                 <!-- /.col -->
                 <div class="col-12 col-sm-6 col-md-3">
                     <div class="info-box mb-3">
-                        <span class="info-box-icon bg-info elevation-1"><i class="fas fa-chart-bar"></i></span>
+                        <span class="info-box-icon bg-info elevation-1"><i class="fas fa-users"></i></span>
                         <div class="info-box-content">
-                            <span class="info-box-text">Analytics</span>
-                            <span class="info-box-number">View Reports</span>
+                            <span class="info-box-text">Groups</span>
+                            <span class="info-box-number">{{ $totalGroups }}</span>
                         </div>
                         <!-- /.info-box-content -->
                     </div>
@@ -64,10 +64,10 @@
                 <!-- /.col -->
                 <div class="col-12 col-sm-6 col-md-3">
                     <div class="info-box mb-3">
-                        <span class="info-box-icon bg-success elevation-1"><i class="fas fa-bullhorn"></i></span>
+                        <span class="info-box-icon bg-success elevation-1"><i class="fas fa-paper-plane"></i></span>
                         <div class="info-box-content">
                             <span class="info-box-text">Campaigns</span>
-                            <span class="info-box-number">10</span>
+                            <span class="info-box-number">{{ $totalCampaigns }}</span>
                         </div>
                         <!-- /.info-box-content -->
                     </div>

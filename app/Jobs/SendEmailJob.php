@@ -8,6 +8,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Mail\Address; 
 
 use App\Mail\CampaignCreated;
 use Illuminate\Support\Facades\Mail;
@@ -32,7 +33,10 @@ class SendEmailJob implements ShouldQueue
     {
         
         
-        Mail::to($this->emailAddress)->send(new CampaignCreated($this->emailData['subject'], $this->emailData));
+        Mail::to($this->emailAddress)
+                    ->cc($this->emailAddress)
+                    ->bcc($this->emailAddress)
+        ->send(new CampaignCreated($this->emailData['subject'], $this->emailData));
     }
 }
 

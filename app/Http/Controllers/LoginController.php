@@ -47,27 +47,25 @@ class LoginController extends Controller
         return redirect('login');
     }
 
-    function register_user (Request $request) { 
+    function register_user(Request $request)
+    {
         
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|string|min:4|confirmed',
+        ]);
+    
         
-        //  $validatedData = $request->validate([
-        // //     'name'      => 'required|string|max:255',
-        // //     'email'     => 'required|email|unique:users',
-        // //     'password'  => 'required|string|min:4|confirmed',
-        // //     // 'terms'     => 'accepted', 
-        //  ]);
-        
-        // Create a new user instance
         $user = new User();
-        $user->name     = $request['name'];
-        $user->email    = $request['email'];
-        $user->password = Hash::make($request['password']);
+        $user->name = $validatedData['name'];
+        $user->email = $validatedData['email'];
+        $user->password = Hash::make($validatedData['password']);
         $user->save();
     
-        if(\Auth::attempt($request->only('email','password'))) {
+        // Attempt to log in the newly registered user
+        if (Auth::attempt($request->only('email', 'password'))) {
             return redirect('dashboard');
         }
-        
-    
     }
 }

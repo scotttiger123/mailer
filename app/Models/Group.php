@@ -16,6 +16,7 @@ class Group extends Model
         'group_category',
         'privacy_settings',
         'group_image',
+        'created_by',
         
     ];
 

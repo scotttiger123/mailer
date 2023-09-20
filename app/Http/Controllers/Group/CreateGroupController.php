@@ -10,6 +10,7 @@ use App\Models\MailsToGroup;
 use App\Imports\EmailsImport; 
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Auth;
 
 class CreateGroupController extends Controller
 {
@@ -19,11 +20,15 @@ class CreateGroupController extends Controller
     
     }
 
-    function assign_mails_index () {
-        
-        $groupNames = Group::pluck('group_name', 'id');
-        return view('group.assign-mails', compact('groupNames'));
-    }
+    public function assign_mails_index()
+{
+    $userId = Auth::id();
+
+    $groupNames = Group::where('created_by', $userId)->pluck('group_name', 'id');
+
+    return view('group.assign-mails', compact('groupNames'));
+}
+
     
     public function store_assigned_mails (Request $request) {
         $data = $request->validate([
@@ -32,7 +37,7 @@ class CreateGroupController extends Controller
                 'nullable',
                 'string',
                 Rule::requiredIf(function () use ($request) {
-                    return !$request->hasFile('email_list'); // Only required if email_list is not present
+                    return !$request->hasFile('email_list'); 
                 }),
             ],
             'email_list' => [
@@ -40,7 +45,7 @@ class CreateGroupController extends Controller
                 'file',
                 'mimes:xlsx',
                 Rule::requiredIf(function () use ($request) {
-                    return empty($request->input('assign_emails_json')); // Only required if assign_emails_json is empty
+                    return empty($request->input('assign_emails_json')); 
                 }),
             ],
         ]);
@@ -55,7 +60,7 @@ class CreateGroupController extends Controller
             if ($request->hasFile('email_list') && $request->file('email_list')->isValid()) {
                 $groupId = $request->input('group_id'); // Get the group_id from the request
 
-                // Pass the $groupId when creating the import instance
+               
                 $import = new EmailsImport($groupId);
 
                 Excel::import($import, $request->file('email_list'));
@@ -70,31 +75,35 @@ class CreateGroupController extends Controller
     public function store(Request $request)
     {
         
+        
         $data = $request->validate([
             'group_name'        => 'required|string|max:255|unique:groups,group_name',
             'group_description' => 'nullable|string',
             'group_type'        => 'required|string',
             'group_category'    => 'required|string',
             'privacy_settings'  => 'required|string',
-            
         ]);
-
+    
+        $userId = Auth::id();
+        $data['created_by'] = $userId;
+    
         Group::create($data);
-
-        // Redirect back or to a specific route after successful data storage
+    
         return redirect()->route('group')->with('success', 'Group created successfully.');
-        
-    }
-
-
-    
-
-    public function view_group(){
-
-        $groups = Group::with('mailsToGroups')->get();
-        return view('group.view-groups', compact('groups'));
     }
     
+
+    
+    public function view_group()
+        {
+            $userId = Auth::id();
+
+            $groups = Group::with('mailsToGroups')
+                ->where('created_by', $userId)
+                ->get();
+
+            return view('group.view-groups', compact('groups'));
+        }
 
     public function deleteGroup(Request $request, $id)
     {

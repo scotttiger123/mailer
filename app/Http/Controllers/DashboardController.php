@@ -15,10 +15,10 @@ class DashboardController extends Controller
     
     public function index()
     {
-        $totalGroups    = Group::count();
-        $totalTemplates = Template::count();
-        $totalCampaigns = Campaign::count();
-        $TotalEmailLog  = EmailLog::count();
+        $totalGroups    = Group::where('created_by', auth()->id())->count();
+        $totalTemplates = Template::where('user_id', auth()->id())->count();
+        $totalCampaigns = Campaign::where('created_by', auth()->id())->count();
+        $TotalEmailLog  = EmailLog::where('user_id', auth()->id())->count();
     
         $user = auth()->user(); 
     

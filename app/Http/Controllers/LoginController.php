@@ -3,6 +3,8 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
+
 
 class LoginController extends Controller
 {
@@ -49,20 +51,22 @@ class LoginController extends Controller
 
     function register_user(Request $request)
     {
+        
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
             'password' => 'required|string|min:4|confirmed',
         ]);
     
+        
         $user = new User();
         $user->name = $validatedData['name'];
         $user->email = $validatedData['email'];
         $user->password = Hash::make($validatedData['password']);
         $user->save();
     
-        Auth::login($user);
+         Auth::login($user);
+    
         return redirect('dashboard');
     }
-    
 }

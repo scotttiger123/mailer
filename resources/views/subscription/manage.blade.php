@@ -23,14 +23,14 @@
                                 <li>10,000 Emails per month</li>
                                 <li>1 Group</li>
                                 <li class="grey">
-                                    @if ($user->package_id === 1)
+                                    @if ($user->package_id === '1')
                                         <a href="javascript:void(0);" class="button selected">Selected</a>
                                     @else  
                                     
                                         <a href="#" class="button">Select</a>
                                     @endif    
                                 </li>
-                                @if ($user->package_id === 1)
+                                @if ($user->package_id === '1')
                                 <div class="ribbon">
                                     <span class="ribbon-text">Selected</span>
                                 </div>
@@ -53,10 +53,15 @@
                                     <a href="{{ route('upgrade-plan') }}" class="button">Upgrade</a>
 
                                 </li>
-                                @if ($user->package_id === 2)
+                                @if ($user->package_id === '2')
                                 <div class="ribbon">
                                     <span class="ribbon-text">Selected</span>
                                     
+                                </div>
+                                @endif
+                                @if ($user->package_id === '2')
+                                <div class="ribbon">
+                                    <span class="ribbon-text">Selected</span>
                                 </div>
                                 @endif
                             </ul>

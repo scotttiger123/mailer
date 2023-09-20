@@ -12,16 +12,19 @@ use App\Mail\CampaignCreated;
 use App\Jobs\SendEmailJob;
 use App\Models\Template;
 use App\Models\EmailLog;
-
+use Illuminate\Support\Facades\Auth;
 
 class CampaignController extends Controller
 {
    
-    function index() {
-        $groups = Group::all();
-        $templates = Template::all(); 
-        return view('campaigns.create-campaign', compact('groups', 'templates'));
-    }
+   
+    public function index()
+{
+    $userId = Auth::id();
+    $groups = Group::where('created_by', $userId)->get();
+    $templates = Template::where('user_id', $userId)->get();
+    return view('campaigns.create-campaign', compact('groups', 'templates'));
+}
 
     public function store(Request $request)
     {
@@ -34,7 +37,8 @@ class CampaignController extends Controller
             'template_option'   => 'required|string',
         ]);
         
-        
+        $userId = Auth::id();
+        $data['created_by'] = $userId;
         $campaign = Campaign::create($data);
         $template = Template::where('id', $data['template_option'])->first();
         
@@ -68,11 +72,17 @@ class CampaignController extends Controller
        return redirect('campaign')->with('success', 'Campaign created successfully!');
     }
 
+    
+
     public function view()
-    {
-        $campaigns = Campaign::all();
-        return view('campaigns.view-campaign', compact('campaigns'));
-    }
+{
+    $userId = Auth::id();
+
+    $campaigns = Campaign::where('created_by', $userId)->get();
+
+    return view('campaigns.view-campaign', compact('campaigns'));
+}
+
 
 
     public function deleteCampaign(Request $request, $id)

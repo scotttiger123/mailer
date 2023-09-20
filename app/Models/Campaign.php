@@ -15,6 +15,7 @@ class Campaign extends Model
         'start_date',
         'recurring_option',
         'template_option',
+        'created_by'
     ];
     public function template()
         {

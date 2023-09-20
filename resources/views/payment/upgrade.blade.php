@@ -39,7 +39,7 @@
                                                 <span>Stripe</span>
                                             </div>
                                             <div class="payment-card paypal-card" id="payment_method_paypal" onclick="showPayPal()">
-                                                <i class="fab fa-paypal"></i> <!-- FontAwesome icon for PayPal -->
+                                            <i class="fab fa-paypal"></i> <!-- FontAwesome icon for PayPal -->
                                                 <span>PayPal</span>
                                             </div>
                                         </div>

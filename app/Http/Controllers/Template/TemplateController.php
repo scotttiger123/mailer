@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Template;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Template;
+use Illuminate\Support\Facades\Auth;
 
 class TemplateController extends Controller
 {
@@ -15,18 +16,20 @@ class TemplateController extends Controller
 
     public function store(Request $request)
     {   
+        
         $data = $request->validate([
-            
+            'name' => 'required|string|max:255|unique:templates,name,NULL,id,user_id,' . Auth::user()->id,
             'name' => 'required|string|max:255|unique:templates,name',
             'subject' => 'required|string|max:255',
             'content' => 'required', 
         ]);
 
-        // Create a new Template instance
+        
         $template = new Template();
-        $template->name = $data['name'];
-        $template->subject = $data['subject'];
-        $template->content = $data['content'];
+        $template->user_id  = Auth::user()->id;
+        $template->name     = $data['name'];
+        $template->subject  = $data['subject'];
+        $template->content  = $data['content'];
 
         $template->save();
 
@@ -37,7 +40,9 @@ class TemplateController extends Controller
 
     public function viewTemplates()
     {   
-        $templates = Template::all();
+        
+        $user = Auth::user();
+        $templates = Template::where('user_id', $user->id)->get();
         return view('template.view-templates', compact('templates'));
     }
 

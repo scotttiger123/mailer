@@ -25,8 +25,10 @@
                         </div>
                     @endif
                     @if ($groups->isEmpty())
-                        <p>No groups available.</p>
-                    @endif
+                        <div class="alert alert-info">    
+                                No groups available.
+                        </div>    
+                    @else 
                     @foreach ($groups as $group)
                         <div class="group-card">
                             <div class="d-flex justify-content-between align-items-center">
@@ -111,6 +113,7 @@
                             <hr>
                         </div>
                     @endforeach
+                    @endif
                 </div>
             </div>
         </div>

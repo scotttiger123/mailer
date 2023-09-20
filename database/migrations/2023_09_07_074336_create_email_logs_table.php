@@ -13,8 +13,12 @@ return new class extends Migration
 {
     Schema::create('email_logs', function (Blueprint $table) {
         $table->id();
-        $table->string('recipient_email');
-        $table->text('message_content');
+        $table->string('recipient_email')->nullable();
+        $table->text('message_content')->nullable();
+        $table->timestamp('opened_at')->nullable();
+        $table->unsignedBigInteger('email_id')->nullable();
+        $table->unsignedBigInteger('user_id')->nullable();
+        $table->unsignedBigInteger('campaign_id')->nullable(); 
         $table->timestamps();
     });
 }

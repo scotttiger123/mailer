@@ -6,6 +6,9 @@ use App\Http\Controllers\Group\CreateGroupController;
 use App\Http\Controllers\Scheduler\CampaignController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Template\TemplateController;
+use App\Http\Controllers\Subscribe\PricingController;
+use App\Http\Controllers\Stripe\StripePaymentController;
+use App\Http\Controllers\PayPal\PayPalController;
 
 /* login */
 Route::get('/', [LoginController::class,'index'])->name('login');
@@ -19,7 +22,8 @@ Route::post('register', [LoginController::class,'register_user'])->name('registe
 /* forgot password */
 Route::get('forgot', [LoginController::class,'forgot'])->name('forgot');
 
-
+Route::group(['middleware' => 'auth'],function() {
+    
 /* Create Group */
 Route::get('group', [CreateGroupController::class,'index'])->name('group');
 Route::post('group', [CreateGroupController::class,'store'])->name('store');
@@ -42,6 +46,7 @@ Route::put('/campaigns/{campaign}', [CampaignController::class,'update'])->name(
 
 
 
+
 /*template*/
 Route::get('template', [TemplateController::class, 'create'])->name('template.create');
 Route::post('template', [TemplateController::class, 'store'])->name('template.create');
@@ -51,15 +56,33 @@ Route::delete('view-templates/{id}', [TemplateController::class, 'destroy'])->na
 Route::get('templates/{id}/edit', [TemplateController::class,'edit'])->name('templates.edit');
 Route::put('/templates/{template}', [TemplateController::class,'update'])->name('templates.update');
 
+/*emailLog*/
 
-
+Route::get('/emails/{emailLogId}/opened', [EmailLogController::class, 'viewOpenedEmail']);
 
 
 /* Dashboard */
 Route::get('dashboard', [DashboardController::class,'index'])->name('dashboard');
 Route::post('logout', [LoginController::class,'logout'])->name('logout');
+Route::get('/campaign/{campaignId}/emaillog', [DashboardController::class,'getEmailLogData']);
+/*packages*/
+Route::get('/pricing', [PricingController::class, 'showPricing'])->name('pricing');
+Route::get('/upgrade-plan', [PricingController::class, 'showUpgradeForm'])->name('upgrade-plan');
+Route::get('/process-upgrade', [PricingController::class, 'processUpgrade'])->name('process-upgrade');
 
-Route::group(['middleware' => 'auth'],function() {
+
+/* stripe payments */ 
+Route::post('/stripepost', [StripePaymentController::class, 'stripePost'])->name('stripe-post');
+
+/*paypal*/
+
+Route::get('paypal', [PayPalController::class, 'index'])->name('paypal');
+Route::get('paypal/payment', [PayPalController::class, 'payment'])->name('paypal.payment');
+Route::get('paypal/payment/success', [PayPalController::class, 'paymentSuccess'])->name('paypal.payment.success');
+Route::get('paypal/payment/cancel', [PayPalController::class, 'paymentCancel'])->name('paypal.payment/cancel');
+
+
+
     Route::get('welcome', function () {
         return view('welcome');
    });

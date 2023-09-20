@@ -25,10 +25,10 @@
                         </div>
                     @endif
                     @if ($campaigns->isEmpty())
-                    <div class="alert alert-info">
-                        No Campaign available.
-                    </div>
-                    @endif
+                        <div class="alert alert-info">
+                            No Campaign available.
+                        </div>
+                    @else
                     <table class="table table-bordered">
                         <thead>
                             <tr>
@@ -78,6 +78,7 @@
                             @endforeach
                         </tbody>
                     </table>
+                    @endif
                 </div>
             </div>
         </div>

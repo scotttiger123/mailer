@@ -36,10 +36,11 @@
                 </div>
                 <div class="form-group">
                 <label for="group_name">Mail Body </label>
-                    <textarea id="compose-textarea" class="form-control" style="height: 300px" name = 'content' ><br>
-                    <br>
-                     <br><br><br><br><br><br><br><br>
-                    </textarea>
+                    <div class="mb-3">
+                        <textarea class="textarea" placeholder="Place some text here" name = 'content' 
+                          style="width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;">
+                        </textarea>
+                    </div>
                 </div>
               </div>
               <!-- /.card-body -->
@@ -59,6 +60,13 @@
     </div>
     
 </div>
-
+<!-- jQuery -->
+<script src="../../plugins/jquery/jquery.min.js"></script>
+<script>
+  $(function () {
+    // Summernote
+    $('.textarea').summernote()
+  });
+</script>
 @endsection
 

@@ -9,10 +9,12 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
-        Schema::create('templates', function (Blueprint $table) {
+        Schema::create('packages', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->decimal('price', 8, 2);
             $table->timestamps();
         });
     }
@@ -22,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('templates');
+        Schema::dropIfExists('packages');
     }
 };

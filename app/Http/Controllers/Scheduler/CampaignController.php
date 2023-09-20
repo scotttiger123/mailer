@@ -46,10 +46,17 @@ class CampaignController extends Controller
             if (is_array($emailAddressesArray)) {
                 
                 foreach ($emailAddressesArray as $emailAddress) {
+                        
+                        $email_id = rand(0, 99999);
+                        $template = json_decode($template, true); 
+                        $template["email_id"] = $email_id;
+                        
                         dispatch(new SendEmailJob($emailAddress,$template));
                         EmailLog::create([
                             'recipient_email' => $emailAddress,
-                            'message_content' => $template,
+                            'email_id'        => $email_id,
+                            'campaign_id'     => $campaign->id,                        
+                            'user_id'         => auth()->user()->id
                         ]);
                 }
             
@@ -91,13 +98,23 @@ class CampaignController extends Controller
                 $emailAddressesArray = json_decode($emailData->assign_emails_json);
                 
                 if (is_array($emailAddressesArray)) {
+                    
                     foreach ($emailAddressesArray as $emailAddress) {
                         
-                            dispatch(new SendEmailJob($emailAddress, $template));
-                            EmailLog::create([
-                                'recipient_email' => $emailAddress,
-                                'message_content' => $template,
-                            ]);
+                        $email_id = rand(0, 99999);
+                        
+                        $template = json_decode($template, true); 
+                        $template["email_id"] = $email_id;
+                        
+                        dispatch(new SendEmailJob($emailAddress,$template));
+                        EmailLog::create([
+                            'recipient_email' => $emailAddress,
+                            
+                            'email_id'        => $email_id,
+                            'campaign_id'     => $existingCampaign->id,
+                            'user_id'         => auth()->user()->id
+                        ]);
+                    
                         }
                         
                     }
@@ -115,14 +132,14 @@ class CampaignController extends Controller
         }
         public function update(Request $request, Campaign $campaign)
         {
-            // Validate the form data
+            
             $data = $request->validate([
                 'campaign_name' => 'required|string|max:255',
-                'group_id' => 'required|exists:groups,id', // Ensure the group exists
+                'group_id' => 'required|exists:groups,id', 
                 'schedule_option' => 'required|in:instant,scheduled',
-                'start_date' => 'nullable|date_format:Y-m-d\TH:i', // Validate the date format
-                'recurring_option' => 'nullable|in:daily,weekly', // Validate the recurring option
-                'template_option' => 'required|exists:templates,id', // Ensure the template exists
+                'start_date' => 'nullable|date_format:Y-m-d\TH:i', 
+                'recurring_option' => 'nullable|in:daily,weekly', 
+                'template_option' => 'required|exists:templates,id', 
             ]);
     
             

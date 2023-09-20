@@ -18,8 +18,9 @@
         <link rel="stylesheet" href="{{ asset('dist/css/adminlte.min.css') }}">
         <!-- summernote -->
         <link rel="stylesheet" href="../../plugins/summernote/summernote-bs4.min.css">
+       
         <style>
-                .summernote-textarea {
+                .textarea {
                     height: 1200px; /* Adjust the value as needed */
                 }
 

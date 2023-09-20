@@ -23,6 +23,11 @@
                             </ul>
                         </div>
                     @endif
+                    @if ($templates->isEmpty())
+                        <div class="alert alert-info">
+                            No template available.
+                        </div>
+                    @else
                     <table class="table">
                         <thead>
                             <tr>
@@ -51,6 +56,7 @@
                             @endforeach
                         </tbody>
                     </table>
+                    @endif
                 </div>
             </div>
         </div>

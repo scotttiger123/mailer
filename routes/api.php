@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FileUploadController;
+use App\Http\Controllers\EmailTracking\EmailTrackingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,7 +17,10 @@ use App\Http\Controllers\FileUploadController;
 */
 
 
-Route::POST('/upload', [FileUploadController::class, 'upload']);
+
+
+Route::get('/track-email-open', [EmailTrackingController::class,'trackEmailOpen']);
+
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     

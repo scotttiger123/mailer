@@ -39,6 +39,7 @@ class CampaignController extends Controller
         
         $userId = Auth::id();
         $data['created_by'] = $userId;
+        
         $campaign = Campaign::create($data);
         $template = Template::where('id', $data['template_option'])->first();
         
@@ -46,7 +47,21 @@ class CampaignController extends Controller
         
         foreach ($emailAddressesData as $emailData) {
             $emailAddressesArray = json_decode($emailData->assign_emails_json);
+            $jsonString = $emailData->assign_emails_json;
         
+                // Remove the square brackets from the JSON string
+                $jsonString = trim($jsonString, '[]');
+                
+                // Split the comma-separated string into an array
+                $emailAddressesArray = explode(',', $jsonString);
+                
+                // Remove double quotation marks from each element
+                $emailAddressesArray = array_map(function ($emailAddress) {
+                    return trim($emailAddress, '"');
+                }, $emailAddressesArray);
+                
+                // Now $emailAddressesArray should contain individual email addresses without quotes
+                
             if (is_array($emailAddressesArray)) {
                 
                 foreach ($emailAddressesArray as $emailAddress) {
@@ -85,55 +100,51 @@ class CampaignController extends Controller
 
 
 
-    public function deleteCampaign(Request $request, $id)
-        {
-            $campaign = Campaign::findOrFail($id);
-            $campaign->delete();
-            return redirect()->route('campaign.view')->with('success', 'Campaign deleted successfully');
+public function resendCampaign(Request $request, $id)
+{
+    $existingCampaign = Campaign::findOrFail($id);
+    $template = Template::where('id', $existingCampaign->template_option)->first();
+    $emailAddressesData = MailsToGroup::where('group_id', $existingCampaign->group_id)->get();
 
-           
-        }
-
-        public function resendCampaign(Request $request, $id)
-        {
-           
-            $existingCampaign = Campaign::findOrFail($id);
-            
-            $template = Template::where('id', $existingCampaign->template_option)->first();
-            
-            $emailAddressesData = MailsToGroup::where('group_id', $existingCampaign->group_id)->get();
-            
-            foreach ($emailAddressesData as $emailData) {
+    foreach ($emailAddressesData as $emailData) {
+        
+        
+        $jsonString = $emailData->assign_emails_json;
+        
+        // Remove the square brackets from the JSON string
+        $jsonString = trim($jsonString, '[]');
+        
+        // Split the comma-separated string into an array
+        $emailAddressesArray = explode(',', $jsonString);
+        
+        // Remove double quotation marks from each element
+        $emailAddressesArray = array_map(function ($emailAddress) {
+            return trim($emailAddress, '"');
+        }, $emailAddressesArray);
+        
+        // Now $emailAddressesArray should contain individual email addresses without quotes
+        
+        if (is_array($emailAddressesArray)) {
+            foreach ($emailAddressesArray as $emailAddress) {
+                $email_id = rand(0, 99999);
                 
-                $emailAddressesArray = json_decode($emailData->assign_emails_json);
+                $templateData = json_decode($template, true);
+                $templateData["email_id"] = $email_id;
                 
-                if (is_array($emailAddressesArray)) {
-                    
-                    foreach ($emailAddressesArray as $emailAddress) {
-                        
-                        $email_id = rand(0, 99999);
-                        
-                        $template = json_decode($template, true); 
-                        $template["email_id"] = $email_id;
-                        
-                        dispatch(new SendEmailJob($emailAddress,$template));
-                        EmailLog::create([
-                            'recipient_email' => $emailAddress,
-                            
-                            'email_id'        => $email_id,
-                            'campaign_id'     => $existingCampaign->id,
-                            'user_id'         => auth()->user()->id
-                        ]);
-                    
-                        }
-                        
-                    }
-
-                
+                dispatch(new SendEmailJob($emailAddress, $templateData));
+                EmailLog::create([
+                    'recipient_email' => $emailAddress,
+                    'email_id'        => $email_id,
+                    'campaign_id'     => $existingCampaign->id,
+                    'user_id'         => auth()->user()->id
+                ]);
             }
-    
-            return redirect()->route('campaign.view')->with('success', 'Campaign restarted successfully');
         }
+    }
+
+    return redirect()->route('campaign.view')->with('success', 'Campaign restarted successfully');
+}
+
 
         public function edit(Campaign $campaign){
             $groups = Group::all();

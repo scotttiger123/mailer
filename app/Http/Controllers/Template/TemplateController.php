@@ -15,26 +15,52 @@ class TemplateController extends Controller
     }
 
     public function store(Request $request)
-    {   
+{   
+    $data = $request->validate([
+        'name' => 'required|string|max:255|unique:templates,name,NULL,id,user_id,' . Auth::user()->id,
+        'subject' => 'required|string|max:255',
+        'content' => 'required', 
+    ]);
+
+    $description = $data['content'];
+
+    $dom = new \DOMDocument(); // Remove the "Template\" namespace prefix
+    $dom->loadHTML($description, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+
+    $images = $dom->getElementsByTagName('img');
+
+    foreach ($images as $key => $img) { 
+        $src = $img->getAttribute('src');
+        $dataUriParts = explode(',', $src);
+        $imageData = base64_decode($dataUriParts[1]);
+
+        $imagePath = "/uploads/" . time() . $key . '.png';
+        $imageFullPath = public_path() . $imagePath;
         
-        $data = $request->validate([
-            'name' => 'required|string|max:255|unique:templates,name,NULL,id,user_id,' . Auth::user()->id,
-            'name' => 'required|string|max:255|unique:templates,name',
-            'subject' => 'required|string|max:255',
-            'content' => 'required', 
-        ]);
-
+        $directory = dirname($imageFullPath);
+        if (!is_dir($directory)) {
+            mkdir($directory, 0755, true);
+        }
         
-        $template = new Template();
-        $template->user_id  = Auth::user()->id;
-        $template->name     = $data['name'];
-        $template->subject  = $data['subject'];
-        $template->content  = $data['content'];
-
-        $template->save();
-
-        return redirect()->route('template.create')->with('success', 'Email template created successfully!');
+        file_put_contents($imageFullPath, $imageData);
+            $imageUrl = asset($imagePath);
+            $img->removeAttribute('src');
+            $img->setAttribute('src', $imageUrl);
+     
     }
+
+    $description = $dom->saveHTML();
+
+    $template = new Template();
+    $template->user_id  = Auth::user()->id;
+    $template->name     = $data['name'];
+    $template->subject  = $data['subject'];
+    $template->content  = $description;
+
+    $template->save();
+
+    return redirect()->route('template.create')->with('success', 'Email template created successfully!');
+}
 
     
 
@@ -81,18 +107,47 @@ class TemplateController extends Controller
     public function update(Request $request, Template $template)
 {
     $request->validate([
-            'name' => 'required|max:255',
-            'subject' => 'required|string|max:255',
-            'content' => 'required',
+        'name' => 'required|max:255',
+        'subject' => 'required|string|max:255',
+        'content' => 'required',
     ]);
+
+    $description = $request->input('content');
+
+    $dom = new \DOMDocument();
+    $dom->loadHTML($description, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+
+    $images = $dom->getElementsByTagName('img');
+
+    foreach ($images as $key => $img) {
+        $src = $img->getAttribute('src');
+        $dataUriParts = explode(',', $src);
+        $imageData = base64_decode($dataUriParts[1]);
+
+        $imagePath = "/uploads/" . time() . $key . '.png';
+        $imageFullPath = public_path() . $imagePath;
+
+        $directory = dirname($imageFullPath);
+        if (!is_dir($directory)) {
+            mkdir($directory, 0755, true);
+        }
+
+        file_put_contents($imageFullPath, $imageData);
+        $imageUrl = asset($imagePath);
+        $img->removeAttribute('src');
+        $img->setAttribute('src', $imageUrl);
+    }
+
+    $description = $dom->saveHTML();
 
     $template->update([
         'name' => $request->input('name'),
         'subject' => $request->input('subject'),
-        'content' => $request->input('content'),
+        'content' => $description,
     ]);
 
     return redirect()->route('view.templates')->with('success', 'Template updated successfully');
 }
+
     
 }

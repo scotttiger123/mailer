@@ -50,13 +50,27 @@ class CreateGroupController extends Controller
             ],
         ]);
         
-        if($data['assign_emails_json']){
-            $emailsArray = explode(',', $data['assign_emails_json']);
-            $assignEmailsJson = json_encode($emailsArray);
+        // if($data['assign_emails_json']){
+        //     $emailsArray = explode(',', $data['assign_emails_json']);
+        //     $assignEmailsJson = json_encode($emailsArray);
+        //     $data['assign_emails_json'] = $assignEmailsJson;
+        //     MailsToGroup::create($data);
+        // }   
+
+        
+        if ($data['assign_emails_json']) {
+            $emailsArray = explode(' ', $data['assign_emails_json']);
+            $emailsArray = array_map('trim', $emailsArray);
+            $emailsArray = array_filter($emailsArray, function ($email) {
+                return !empty($email);
+            });
+        
+            $assignEmailsJson = json_encode(array_values($emailsArray));
             $data['assign_emails_json'] = $assignEmailsJson;
             MailsToGroup::create($data);
-        }   
-    
+        }
+        
+        
             if ($request->hasFile('email_list') && $request->file('email_list')->isValid()) {
                 $groupId = $request->input('group_id'); // Get the group_id from the request
 
@@ -117,22 +131,31 @@ class CreateGroupController extends Controller
     }
 
 
+   
+    
     public function update(Request $request)
     {
-        
         $group = Group::findOrFail($request->input('editGroupId'));
         
         $group->group_name = $request->input('editGroupName');
-        $emails = preg_split('/\r\n|\r|\n/', $request->input('editAssignedEmails'));
-        $group->mailsToGroups()->delete(); // Delete existing email assignments
+        
+        // Split the input by spaces, remove empty elements, and convert to JSON
+        $emails = explode(' ', $request->input('editAssignedEmails'));
+        $emails = array_map('trim', $emails); // Remove leading/trailing spaces
+        $emails = array_filter($emails, function ($email) {
+            return !empty($email);
+        });
     
-        foreach ($emails as $email) {
-            $group->mailsToGroups()->create([
-                'assign_emails_json' => json_encode([$email]),
-            ]);
-        }
+        $group->mailsToGroups()->delete();
+        $group->mailsToGroups()->create([
+            'assign_emails_json' => json_encode(array_values($emails)),
+        ]);
+        
         $group->save();
         return redirect()->route('view-groups')->with('success', 'Group updated successfully');
     }
+    
+
+    
 
 }

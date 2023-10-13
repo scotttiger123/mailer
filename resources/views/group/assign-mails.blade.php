@@ -36,8 +36,8 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="assign_email">E-mails</label> (can paste bulk mail address formate :abc@gmail.com,xyx@yahoo.com,yyx@gmail.com))
-                            <textarea class="form-control" id="assign_email" placeholder = "xyx@gmail.com,abc@gmail.com,yyx@gmail.com"name="assign_emails_json" rows="3" ></textarea>
+                            <label for="assign_email">E-mails</label> (can paste bulk mail address formate :abc@gmail.com xyx@yahoo.com yyx@gmail.com))
+                            <textarea class="form-control" id="assign_email" placeholder = "xyx@gmail.com abc@gmail.com yyx@gmail.com"name="assign_emails_json" rows="3" ></textarea>
                         </div>
                         <div class="form-group">
                             <label for="email_list">Upload Email List</label> (excel formate)

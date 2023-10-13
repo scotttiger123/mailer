@@ -97,9 +97,36 @@ function confirmResend(event) {
         if (confirm("Are you sure you want to restart this campaign?")) {
             return true;
         } else {
-            event.preventDefault(); // Prevent form submission
+            event.preventDefault(); 
             return false;
         }
     }
+
+    function confirmResend(event) {
+    event.preventDefault(); 
+    
+    
+    $.ajax({
+        url: "{{ route('campaigns.getEmailCount', $campaign->id) }}", 
+        method: 'GET',
+        success: function (response) {
+            var emailCount = response.emailCount; 
+            if (confirm("Are you sure you want to restart this campaign with " + emailCount + " emails?")) {
+                
+                event.target.closest('form').submit();
+            }
+        },
+        error: function () {
+   
+            alert("Failed to fetch email count.");
+        }
+    });
+}
+
+
+
+
+
+
 </script>
 @endsection

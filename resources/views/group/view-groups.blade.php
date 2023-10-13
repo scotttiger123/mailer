@@ -43,7 +43,10 @@
                                             data-target="#editGroupModal"
                                             data-groupid="{{ $group->id }}"
                                             data-groupname="{{ $group->group_name }}"
-                                            data-assignedemails="{{ implode(', ', array_merge(...array_map('json_decode', $group->mailsToGroups->pluck('assign_emails_json')->flatten()->toArray()))) }}"
+                                            data-assignedemails="{{ htmlspecialchars(implode(' ', array_merge(...array_map('json_decode', $group->mailsToGroups->pluck('assign_emails_json')->flatten()->toArray()))) ) }}"
+
+
+
 
                                         >
                                             Edit
@@ -98,17 +101,20 @@
                             <div class="show-emails">
                                 <div class="emails-list hidden">
                                     @if ($group->mailsToGroups->count() > 0)
-                                        <ul>
+                                        <div>
                                             @foreach ($group->mailsToGroups as $mailsToGroup)
                                                 @foreach (json_decode($mailsToGroup->assign_emails_json) as $email)
-                                                    {{ $email }}
+                                                    @if (trim($email) !== '')
+                                                        <span class="badge badge-secondary">{{ $email }}</span>
+                                                    @endif
                                                 @endforeach
                                             @endforeach
-                                        </ul>
+                                        </div>
                                     @else
                                         <p>No assigned e-mails for this group.</p>
                                     @endif
                                 </div>
+
                             </div>
                             <hr>
                         </div>
@@ -156,7 +162,7 @@ $(document).ready(function() {
         console.log(assignedEmails);
         if (Array.isArray(assignedEmails)) {
             // Flatten the array and join the elements with commas
-            var emailString = assignedEmails.flat().join(', ');
+            var emailString = assignedEmails.flat();
         } else {
             // If it's not an array, treat it as a single email
             var emailString = assignedEmails;

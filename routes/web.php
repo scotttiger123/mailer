@@ -9,6 +9,7 @@ use App\Http\Controllers\Template\TemplateController;
 use App\Http\Controllers\Subscribe\PricingController;
 use App\Http\Controllers\Stripe\StripePaymentController;
 use App\Http\Controllers\PayPal\PayPalController;
+use App\Http\Controllers\QueueWorkController;
 
 /* login */
 Route::get('/', [LoginController::class,'index'])->name('login');
@@ -42,6 +43,8 @@ Route::delete('view-campaign/{id}', [CampaignController::class,'deleteCampaign']
 Route::post('campaigns/{id}/resend', [CampaignController::class, 'resendCampaign'])->name('campaigns.resend');
 Route::get('campaigns/{campaign}/edit', [CampaignController::class, 'edit'])->name('campaigns.edit');
 Route::put('/campaigns/{campaign}', [CampaignController::class,'update'])->name('campaigns.update');
+Route::get('campaigns/getEmailCount/{id}', [CampaignController::class,'getEmailCount'])->name('campaigns.getEmailCount');
+
 
 
 

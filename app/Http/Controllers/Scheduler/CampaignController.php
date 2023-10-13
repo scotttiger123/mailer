@@ -98,6 +98,29 @@ class CampaignController extends Controller
     return view('campaigns.view-campaign', compact('campaigns'));
 }
 
+public function getEmailCount(Request $request, $id)
+{
+    $existingCampaign = Campaign::findOrFail($id);
+    $emailAddressesData = MailsToGroup::where('group_id', $existingCampaign->group_id)->get();
+     
+    $countEmail = 0; 
+
+    foreach ($emailAddressesData as $emailData) {
+        $jsonString = $emailData->assign_emails_json;
+        $jsonString = trim($jsonString, '[]');
+        $emailAddressesArray = explode(',', $jsonString);
+        $emailAddressesArray = array_map(function ($emailAddress) {
+            return trim($emailAddress, '"');
+        }, $emailAddressesArray);
+        foreach ($emailAddressesArray as $emailAddress) {
+        
+                $countEmail++;
+            }    
+        }
+
+    return response()->json(['emailCount' => $countEmail]);
+}
+
 
 
 public function resendCampaign(Request $request, $id)
